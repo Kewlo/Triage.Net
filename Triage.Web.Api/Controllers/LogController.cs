@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Web.Http;
 using Triage.Api.Domain;
+using Triage.Api.Domain.Diagnostics;
+using Triage.Api.Domain.Messages;
 using Triage.DomainController;
 
 namespace Triage.Web.Api.Controllers

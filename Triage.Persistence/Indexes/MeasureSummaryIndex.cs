@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using Raven.Client.Indexes;
 using Triage.Api.Domain;
+using Triage.Api.Domain.Diagnostics;
+using Triage.Api.Domain.Messages;
 
 namespace Triage.Persistence.Indexes
 {

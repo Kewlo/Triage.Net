@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Triage.Api.Domain;
+using Triage.Api.Domain.Diagnostics;
+using Triage.Api.Domain.Messages;
 using Triage.Persistence.Context;
 using Triage.Persistence.Indexes;
 

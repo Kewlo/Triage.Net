@@ -6,6 +6,7 @@ using Raven.Client.Document;
 using Raven.Client.Embedded;
 using Raven.Client.Indexes;
 using Triage.Api.Domain;
+using Triage.Api.Domain.Messages;
 using Triage.Persistence.Indexes;
 
 namespace Triage.Persistence.Context

@@ -60,10 +60,6 @@
       <Project>{75A9F37F-C2CF-411A-B9EE-783901D529F4}</Project>
       <Name>Triage.Api.Domain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Triage.Domain\Triage.Domain.csproj">
-      <Project>{E0C60F52-D6C4-45BC-8124-52ED70694EE7}</Project>
-      <Name>Triage.Domain</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Triage.Persistence\Triage.Persistence.csproj">
       <Project>{BD089347-9512-48A3-8016-39BADA950A52}</Project>
       <Name>Triage.Persistence</Name>
