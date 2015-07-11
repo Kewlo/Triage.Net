@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web.Http;
 using Triage.Api.Domain;
@@ -65,6 +66,21 @@ namespace Triage.Web.Api.Controllers
             });
         }
 
+        [HttpGet]
+        public double Setup(int count = 1000)
+        {
+            var timer = Stopwatch.StartNew();
+            _eventLogController.Setup(count);
+            timer.Stop();
+
+            return timer.Elapsed.TotalSeconds;
+        }
+
+        [HttpGet]
+        public IEnumerable<MeasureSummary> MeasureSummary()
+        {
+            return _eventLogController.GetSummary();
+        }
         [HttpGet]
         public IEnumerable<MessageViewModel> Messages()
         {

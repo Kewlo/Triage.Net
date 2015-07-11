@@ -6,7 +6,7 @@ namespace Triage.Api.Domain
     {
         protected Event()
         {
-            Date = new DateTime();
+            Date = DateTime.Now;
         }
         public string Title { get; set; }
         public DateTime Date { get; set; }
@@ -21,7 +21,19 @@ namespace Triage.Api.Domain
 
     public class Measure : Event
     {
-        public double Value { get; set; }
+        public decimal Value { get; set; }
+    }
+
+    public class MeasureSummary
+    {
+        public string Title { get; set; }
+        public DateTime Date { get; set; }
+        public int Hour { get; set; }
+        public decimal Sum { get; set; }
+        public int Count { get; set; }
+        public decimal Min { get; set; }
+        public decimal Max { get; set; }
+        public decimal Average { get; set; }
     }
 
     public class Message : Event

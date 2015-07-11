@@ -4,8 +4,9 @@ using System.Linq;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Embedded;
-using Raven.Database.Server;
+using Raven.Client.Indexes;
 using Triage.Api.Domain;
+using Triage.Persistence.Indexes;
 
 namespace Triage.Persistence.Context
 {
@@ -18,6 +19,7 @@ namespace Triage.Persistence.Context
 
     public interface ITriageDbContext : IDbContext
     {
+        IQueryable<TEntity> Query<TEntity, TIndex>() where TIndex : AbstractIndexCreationTask, new();
         void SaveChanges();
     }
 
@@ -33,6 +35,11 @@ namespace Triage.Persistence.Context
         public IQueryable<T> Query<T>()
         {
             return DocumentSession.Query<T>();
+        }
+
+        public IQueryable<TEntity> Query<TEntity, TIndex>() where TIndex : AbstractIndexCreationTask, new()
+        {
+            return DocumentSession.Query<TEntity, TIndex>();
         }
 
         public void AddEntity<T>(T entity)
@@ -91,6 +98,8 @@ namespace Triage.Persistence.Context
                     ? DocumentConvention.DefaultTypeTagName(typeof (Message))
                     : DocumentConvention.DefaultTypeTagName(type);
 
+
+            IndexCreation.CreateIndexes(typeof(MeasureSummaryIndex).Assembly, documentStore);
             return documentStore;
         }
 
