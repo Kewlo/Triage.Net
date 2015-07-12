@@ -1,17 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triage.UI.Mvc", "Triage.UI.Mvc\Triage.UI.Mvc.csproj", "{4C440748-D636-4782-A0FF-00184C5549A7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triage.DomainController", "Triage.DomainController\Triage.DomainController.csproj", "{20085873-44A1-4E26-A01C-147A75766295}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triage.Persistence", "Triage.Persistence\Triage.Persistence.csproj", "{BD089347-9512-48A3-8016-39BADA950A52}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triage.Web.Api", "Triage.Web.Api\Triage.Web.Api.csproj", "{B9813D25-D2E0-4C4A-A3C0-460F4741D4C2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triage.Api.Domain", "Triage.Api.Domain\Triage.Api.Domain.csproj", "{75A9F37F-C2CF-411A-B9EE-783901D529F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triage.Business", "Triage.Business\Triage.Business.csproj", "{5F72EB08-55ED-4A4D-A888-4FA7FF3126B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		{4C440748-D636-4782-A0FF-00184C5549A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C440748-D636-4782-A0FF-00184C5549A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C440748-D636-4782-A0FF-00184C5549A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{20085873-44A1-4E26-A01C-147A75766295}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{20085873-44A1-4E26-A01C-147A75766295}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{20085873-44A1-4E26-A01C-147A75766295}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{20085873-44A1-4E26-A01C-147A75766295}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BD089347-9512-48A3-8016-39BADA950A52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BD089347-9512-48A3-8016-39BADA950A52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD089347-9512-48A3-8016-39BADA950A52}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{75A9F37F-C2CF-411A-B9EE-783901D529F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75A9F37F-C2CF-411A-B9EE-783901D529F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75A9F37F-C2CF-411A-B9EE-783901D529F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F72EB08-55ED-4A4D-A888-4FA7FF3126B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F72EB08-55ED-4A4D-A888-4FA7FF3126B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F72EB08-55ED-4A4D-A888-4FA7FF3126B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F72EB08-55ED-4A4D-A888-4FA7FF3126B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

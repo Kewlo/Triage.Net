@@ -64,9 +64,9 @@
       <Project>{75A9F37F-C2CF-411A-B9EE-783901D529F4}</Project>
       <Name>Triage.Api.Domain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Triage.DomainController\Triage.DomainController.csproj">
-      <Project>{20085873-44A1-4E26-A01C-147A75766295}</Project>
-      <Name>Triage.DomainController</Name>
+    <ProjectReference Include="..\Triage.Business\Triage.Business.csproj">
+      <Project>{5F72EB08-55ED-4A4D-A888-4FA7FF3126B0}</Project>
+      <Name>Triage.Business</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

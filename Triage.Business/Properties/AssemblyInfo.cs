@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Triage.DomainController")]
+[assembly: AssemblyTitle("Triage.Business")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Triage.DomainController")]
+[assembly: AssemblyProduct("Triage.Business")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("193f9ea6-914f-4995-b95e-423c1deefe46")]
+[assembly: Guid("37dffd2e-61c7-42bc-917d-b320f04fea78")]
 
 // Version information for an assembly consists of the following four values:
 //
