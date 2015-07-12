@@ -5,7 +5,6 @@ using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Embedded;
 using Raven.Client.Indexes;
-using Triage.Api.Domain;
 using Triage.Api.Domain.Messages;
 using Triage.Persistence.Indexes;
 
@@ -15,7 +14,7 @@ namespace Triage.Persistence.Context
     {
         IQueryable<T> Query<T>();
         void AddEntity<T>(T entity);
-        void DeleteEnitity<T>(T entity);
+        void DeleteEntity<T>(T entity);
     }
 
     public interface ITriageDbContext : IDbContext
@@ -48,7 +47,7 @@ namespace Triage.Persistence.Context
             DocumentSession.Store(entity);
         }
 
-        public void DeleteEnitity<T>(T entity)
+        public void DeleteEntity<T>(T entity)
         {
             DocumentSession.Delete(entity);
         }
