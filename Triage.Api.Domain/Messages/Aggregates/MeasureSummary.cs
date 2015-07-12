@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Triage.Api.Domain.Messages
+namespace Triage.Api.Domain.Messages.Aggregates
 {
     public class MeasureSummary
     {

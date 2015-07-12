@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Web.Http;
-using Triage.Api.Domain;
 using Triage.Api.Domain.Diagnostics;
 using Triage.Api.Domain.Messages;
+using Triage.Api.Domain.Messages.Aggregates;
 using Triage.DomainController;
 
 namespace Triage.Web.Api.Controllers
@@ -26,11 +26,18 @@ namespace Triage.Web.Api.Controllers
         }
 
         [HttpGet]
+        public string ClearErrors()
+        {
+            _eventLogController.ClearErrorMessages();
+            return "Done";
+        }
+        [HttpGet]
         public Response Error(string id)
         {
             _eventLogController.LogError(new ErrorMessage
             {
-                Title = id,
+                Title = id +  " - " + DateTime.Now.Millisecond + " ms",
+                StackTrace = id + " - Stack location"
             });
 
             return new Response { Success = true };
@@ -89,12 +96,19 @@ namespace Triage.Web.Api.Controllers
             return _eventLogController.GetMessages()
                 .Select(message => new MessageViewModel
                 {
+                    Id = message.Id,
                     Title  = message.Title,
                     Date = message.Date,
                     Type = message.Type
                 });
         }
 
+        [HttpGet]
+        public IEnumerable<ErrorMessagesBySource> ErrorMessages()
+        {
+            return _eventLogController.GetErrorsBySource();
+
+        }
         [HttpGet]
         public IList<Measure> Measures()
         {
@@ -104,6 +118,7 @@ namespace Triage.Web.Api.Controllers
 
     public class MessageViewModel
     {
+        public string Id { get; set; }
         public string Title { get; set; }
         public DateTime Date { get; set; }
         public MessageType Type { get; set; }

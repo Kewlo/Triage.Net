@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Triage.Api.Domain;
 using Triage.Api.Domain.Diagnostics;
 using Triage.Api.Domain.Messages;
+using Triage.Api.Domain.Messages.Aggregates;
 using Triage.Persistence.Context;
 using Triage.Persistence.Indexes;
 
@@ -19,6 +19,8 @@ namespace Triage.DomainController
         IList<Measure> GetMeasures();
         void Setup(int count);
         IEnumerable<MeasureSummary> GetSummary();
+        IEnumerable<ErrorMessagesBySource> GetErrorsBySource();
+        void ClearErrorMessages();
     }
 
 
@@ -111,6 +113,32 @@ namespace Triage.DomainController
 
                 dbContext.SaveChanges();
             }
+        }
+        
+        public void ClearErrorMessages()
+        {
+            using (var dbContext = _triageDbContextFactory.CreateTriageDbContext())
+            {
+                var messages = dbContext
+                    .Query<ErrorMessage>()
+                    .ToList();
+
+                messages.ForEach(dbContext.DeleteEntity);
+
+                dbContext.SaveChanges();
+            }
+        }
+
+        public IEnumerable<ErrorMessagesBySource> GetErrorsBySource()
+        {
+            using (var dbContext = _triageDbContextFactory.CreateTriageDbContext())
+            {
+                return dbContext
+                    .Query<ErrorMessagesBySource, ErrorMessagesBySourceIndex>()
+                    .OrderByDescending(x => x.Count)
+                    .ToList();
+            }
+
         }
 
         public IEnumerable<MeasureSummary> GetSummary()

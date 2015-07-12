@@ -39,10 +39,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Messages\Aggregates\ErrorMessagesBySource.cs" />
     <Compile Include="Messages\ErrorMessage.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="Diagnostics\Measure.cs" />
-    <Compile Include="Messages\MeasureSummary.cs" />
+    <Compile Include="Messages\Aggregates\MeasureSummary.cs" />
     <Compile Include="Messages\Message.cs" />
     <Compile Include="Messages\MessageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
