@@ -88,21 +88,21 @@ namespace Triage.Persistence.Context
         }
     }
 
-    public interface ITriageDbContextFactory
+    public interface IDbContextFactory
     {
         ITriageDbContext CreateTriageDbContext();
     }
 
-    public class TriageDbContextFactory : ITriageDbContextFactory
+    public class DbContextFactory : IDbContextFactory
     {
         private readonly IEnumerable<IDbIndex> _dbIndexes;
 
-        public TriageDbContextFactory(IEnumerable<IDbIndex> dbIndexes)
+        public DbContextFactory(IEnumerable<IDbIndex> dbIndexes)
         {
             _dbIndexes = dbIndexes;
         }
 
-        ~TriageDbContextFactory()
+        ~DbContextFactory()
         {
             try
             {

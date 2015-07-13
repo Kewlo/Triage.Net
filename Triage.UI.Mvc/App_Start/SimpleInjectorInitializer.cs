@@ -5,10 +5,12 @@ using System.Linq;
 using System.Web.Http;
 using SimpleInjector.Integration.WebApi;
 using Triage.Business;
+using Triage.Business.Notifications;
 using Triage.Persistence.Context;
 using Triage.Web.Api.Controllers;
 
 [assembly: WebActivator.PostApplicationStartMethod(typeof(Triage.UI.Mvc.App_Start.SimpleInjectorInitializer), "Initialize")]
+[assembly: WebActivator.ApplicationShutdownMethod(typeof(Triage.UI.Mvc.App_Start.SimpleInjectorInitializer), "Shutdown")]
 
 namespace Triage.UI.Mvc.App_Start
 {
@@ -20,6 +22,8 @@ namespace Triage.UI.Mvc.App_Start
     
     public static class SimpleInjectorInitializer
     {
+        private static INotificationService _notificationService;
+
         /// <summary>Initialize the container and register it as MVC3 Dependency Resolver.</summary>
         public static void Initialize()
         {
@@ -36,8 +40,16 @@ namespace Triage.UI.Mvc.App_Start
             var resolver = new SimpleInjectorDependencyResolver(container);
             DependencyResolver.SetResolver(resolver);
             GlobalConfiguration.Configuration.DependencyResolver = new SimpleInjectorWebApiDependencyResolver(container);
+
+            _notificationService = container.GetInstance<INotificationService>();
+            _notificationService.Start();
         }
-     
+
+        public static void Shudown()
+        {
+            _notificationService.Stop();
+        }
+
         private static void InitializeContainer(Container container)
         {
             var assemblies = GetInjectionAssemblies().ToList();
@@ -46,15 +58,17 @@ namespace Triage.UI.Mvc.App_Start
             container.RegisterAllConcreteImplementations<IDbIndex>(assemblies);
 
             container.Register<LogController>();
-            container.Register<ITriageDbContextFactory, TriageDbContextFactory>(Lifestyle.Singleton);
+            container.Register<IDbContextFactory, DbContextFactory>(Lifestyle.Singleton);
+            container.Register<INotificationService, NotificationService>(Lifestyle.Singleton);
+
         }
 
         private static IEnumerable<Assembly> GetInjectionAssemblies()
         {
             yield return Assembly.GetExecutingAssembly();
-            yield return Assembly.GetAssembly(typeof (ITriageDbContextFactory));
-            yield return Assembly.GetAssembly(typeof (IEventLogController));
-            yield return Assembly.GetAssembly(typeof (ITriageDbContextFactory));
+            yield return Assembly.GetAssembly(typeof (IDbContextFactory));
+            yield return Assembly.GetAssembly(typeof (IEventLogBusiness));
+            yield return Assembly.GetAssembly(typeof (IDbContextFactory));
             yield return Assembly.GetAssembly(typeof (LogController));
         }
     }

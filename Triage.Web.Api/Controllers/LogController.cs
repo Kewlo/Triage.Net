@@ -12,11 +12,11 @@ namespace Triage.Web.Api.Controllers
 {
     public class LogController : ApiController
     {
-        private readonly IEventLogController _eventLogController;
+        private readonly IEventLogBusiness _eventLogBusiness;
 
-        public LogController(IEventLogController eventLogController)
+        public LogController(IEventLogBusiness eventLogBusiness)
         {
-            _eventLogController = eventLogController;
+            _eventLogBusiness = eventLogBusiness;
         }
 
         [HttpGet]
@@ -28,13 +28,13 @@ namespace Triage.Web.Api.Controllers
         [HttpGet]
         public string ClearErrors()
         {
-            _eventLogController.ClearErrorMessages();
+            _eventLogBusiness.ClearErrorMessages();
             return "Done";
         }
         [HttpGet]
         public Response Error(string id)
         {
-            _eventLogController.LogError(new ErrorMessage
+            _eventLogBusiness.LogError(new ErrorMessage
             {
                 Title = id +  " - " + DateTime.Now.Millisecond + " ms",
                 StackTrace = id + " - Stack location"
@@ -46,7 +46,7 @@ namespace Triage.Web.Api.Controllers
         [HttpGet]
         public Response Warning(string id)
         {
-            _eventLogController.LogWarning(new Message
+            _eventLogBusiness.LogWarning(new Message
             {
                 Title = id,
             });
@@ -57,7 +57,7 @@ namespace Triage.Web.Api.Controllers
         [HttpGet]
         public Response Info(string id)
         {
-            _eventLogController.LogMessage(new Message
+            _eventLogBusiness.LogMessage(new Message
             {
                 Title = id,
             });
@@ -68,7 +68,7 @@ namespace Triage.Web.Api.Controllers
         [HttpGet]
         public void Measure()
         {
-            _eventLogController.LogMeasure(new Measure
+            _eventLogBusiness.LogMeasure(new Measure
             {
                 Title = "Test Measure",
                 Value = DateTime.Now.Millisecond
@@ -79,7 +79,7 @@ namespace Triage.Web.Api.Controllers
         public double Setup(int count = 1000)
         {
             var timer = Stopwatch.StartNew();
-            _eventLogController.Setup(count);
+            _eventLogBusiness.Setup(count);
             timer.Stop();
 
             return timer.Elapsed.TotalSeconds;
@@ -88,12 +88,12 @@ namespace Triage.Web.Api.Controllers
         [HttpGet]
         public IEnumerable<MeasureSummary> MeasureSummary()
         {
-            return _eventLogController.GetSummary();
+            return _eventLogBusiness.GetSummary();
         }
         [HttpGet]
         public IEnumerable<MessageViewModel> Messages()
         {
-            return _eventLogController.GetMessages()
+            return _eventLogBusiness.GetMessages()
                 .Select(message => new MessageViewModel
                 {
                     Id = message.Id,
@@ -106,13 +106,13 @@ namespace Triage.Web.Api.Controllers
         [HttpGet]
         public IEnumerable<ErrorMessagesBySource> ErrorMessages()
         {
-            return _eventLogController.GetErrorsBySource();
+            return _eventLogBusiness.GetErrorsBySource();
 
         }
         [HttpGet]
         public IList<Measure> Measures()
         {
-            return _eventLogController.GetMeasures();
+            return _eventLogBusiness.GetMeasures();
         }
     }
 

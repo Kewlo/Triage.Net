@@ -18,9 +18,12 @@
         <h6>Todo</h6>
         <script type="text/javascript">
             var logHub = $.connection.logHub;
-            logHub.client.messageUpdate = function (messages) {
+            logHub.client.hourlyErrorUpdate = function (messages) {
                 console.log(messages);
-                $m = messages;
+            };
+
+            logHub.client.notify = function () {
+                console.log("Running Notify...");
             };
 
             $.connection.hub.start()
