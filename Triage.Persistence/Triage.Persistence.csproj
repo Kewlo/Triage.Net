@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\RavenDbContext.cs" />
+    <Compile Include="Indexes\IndexName.cs" />
     <Compile Include="Indexes\ErrorMessagesBySourceIndex.cs" />
     <Compile Include="Indexes\MeasureSummaryIndex.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

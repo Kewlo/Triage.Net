@@ -1,13 +1,19 @@
 ﻿using System.Linq;
 using Raven.Client.Indexes;
 using Triage.Api.Domain.Diagnostics;
-using Triage.Api.Domain.Messages;
 using Triage.Api.Domain.Messages.Aggregates;
+using Triage.Persistence.Context;
 
 namespace Triage.Persistence.Indexes
 {
-    public class MeasureSummaryIndex : AbstractIndexCreationTask<Measure, MeasureSummary>
+    public interface IMeasureSummaryIndex : IDbIndex
     {
+    }
+
+    public class MeasureSummaryIndex : AbstractIndexCreationTask<Measure, MeasureSummary>, IMeasureSummaryIndex
+    {
+        public override string IndexName { get { return Persistence.Indexes.IndexName.MessageSummary.ToString(); } }
+
         public MeasureSummaryIndex()
         {
             Map = docs => from doc in docs

@@ -6,7 +6,7 @@ using System.Web.Http;
 using Triage.Api.Domain.Diagnostics;
 using Triage.Api.Domain.Messages;
 using Triage.Api.Domain.Messages.Aggregates;
-using Triage.DomainController;
+using Triage.Business;
 
 namespace Triage.Web.Api.Controllers
 {

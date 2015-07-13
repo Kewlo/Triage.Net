@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Embedded;
 using Raven.Client.Indexes;
+using Raven.Imports.Newtonsoft.Json.Utilities;
 using Triage.Api.Domain.Messages;
 using Triage.Persistence.Indexes;
 
@@ -19,17 +22,27 @@ namespace Triage.Persistence.Context
 
     public interface ITriageDbContext : IDbContext
     {
-        IQueryable<TEntity> Query<TEntity, TIndex>() where TIndex : AbstractIndexCreationTask, new();
+        IQueryable<TEntity> Query<TEntity, TIndex>() where TIndex : IDbIndex;
         void SaveChanges();
+    }
+
+    public interface IDbIndex
+    {
     }
 
     public class TriageDbContext : ITriageDbContext
     {
         internal IDocumentSession DocumentSession { get; private set; }
+        protected Dictionary<Type, IDbIndex> DbIndexes { get; set; }
 
-        internal TriageDbContext(IDocumentSession documentSession)
+        internal TriageDbContext(IDocumentSession documentSession, IEnumerable<IDbIndex> dbIndexes)
         {
             DocumentSession = documentSession;
+            var dbIndexType = typeof (IDbIndex);
+            DbIndexes = dbIndexes
+                .SelectMany(index => index.GetType().GetAllInterfaces().Select(Interface => new { Interface, Index = index}))
+                .Where(x => x.Interface != dbIndexType)
+                .ToDictionary(x => x.Interface, x => x.Index);
         }
 
         public IQueryable<T> Query<T>()
@@ -37,9 +50,21 @@ namespace Triage.Persistence.Context
             return DocumentSession.Query<T>();
         }
 
-        public IQueryable<TEntity> Query<TEntity, TIndex>() where TIndex : AbstractIndexCreationTask, new()
+        public IQueryable<TEntity> Query<TEntity, TIndex>() where TIndex : IDbIndex
         {
-            return DocumentSession.Query<TEntity, TIndex>();
+            var indexType = typeof (TIndex);
+            if (DbIndexes.ContainsKey(indexType) == false)
+            {
+                throw new InvalidOperationException(string.Format("Could not resolve index '{0}'. Check dependency injection configuration", indexType.FullName));
+            }
+
+            var ravenIndex = DbIndexes[indexType] as AbstractIndexCreationTask;
+            if (ravenIndex == null)
+            {
+                throw new InvalidOperationException(string.Format("Index '{0}' must inherit from Raven.Client.Indexes.AbstractIndexCreationTask", indexType.FullName));
+            }
+
+            return DocumentSession.Query<TEntity>(ravenIndex.IndexName);
         }
 
         public void AddEntity<T>(T entity)
@@ -70,6 +95,13 @@ namespace Triage.Persistence.Context
 
     public class TriageDbContextFactory : ITriageDbContextFactory
     {
+        private readonly IEnumerable<IDbIndex> _dbIndexes;
+
+        public TriageDbContextFactory(IEnumerable<IDbIndex> dbIndexes)
+        {
+            _dbIndexes = dbIndexes;
+        }
+
         ~TriageDbContextFactory()
         {
             try
@@ -105,7 +137,7 @@ namespace Triage.Persistence.Context
 
         public ITriageDbContext CreateTriageDbContext()
         {
-            return new TriageDbContext(_documentStore.Value.OpenSession("Triage"));
+            return new TriageDbContext(_documentStore.Value.OpenSession("Triage"), _dbIndexes);
         }
     }
 

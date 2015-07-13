@@ -4,10 +4,11 @@ using System.Linq;
 using Triage.Api.Domain.Diagnostics;
 using Triage.Api.Domain.Messages;
 using Triage.Api.Domain.Messages.Aggregates;
+using Triage.Business.Messages;
 using Triage.Persistence.Context;
 using Triage.Persistence.Indexes;
 
-namespace Triage.DomainController
+namespace Triage.Business
 {
     public interface IEventLogController
     {
@@ -27,10 +28,12 @@ namespace Triage.DomainController
     public class EventLogController: IEventLogController
     {
         private readonly ITriageDbContextFactory _triageDbContextFactory;
+        private readonly ILogHub _logHub;
 
-        public EventLogController(ITriageDbContextFactory triageDbContextFactory)
+        public EventLogController(ITriageDbContextFactory triageDbContextFactory, ILogHub logHub)
         {
             _triageDbContextFactory = triageDbContextFactory;
+            _logHub = logHub;
         }
 
         public void LogError(ErrorMessage errorMessage)
@@ -40,6 +43,8 @@ namespace Triage.DomainController
             {
                 dbContext.AddEntity((Message)errorMessage);
                 dbContext.SaveChanges();
+
+                _logHub.SendNewMessages(new [] { errorMessage});
             }
         }
 
@@ -134,7 +139,7 @@ namespace Triage.DomainController
             using (var dbContext = _triageDbContextFactory.CreateTriageDbContext())
             {
                 return dbContext
-                    .Query<ErrorMessagesBySource, ErrorMessagesBySourceIndex>()
+                    .Query<ErrorMessagesBySource, IErrorMessagesBySourceIndex>()
                     .OrderByDescending(x => x.Count)
                     .ToList();
             }
@@ -146,7 +151,7 @@ namespace Triage.DomainController
             using (var dbContext = _triageDbContextFactory.CreateTriageDbContext())
             {
                 return dbContext
-                    .Query<MeasureSummary, MeasureSummaryIndex>()
+                    .Query<MeasureSummary, IMeasureSummaryIndex>()
                     .OrderByDescending(x => x.Count)
                     .ToList();
             }

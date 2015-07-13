@@ -1,0 +1,33 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Home</title>
+</head>
+    <body>
+        <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+        <script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
+        <script src="~/signalr/hubs"></script>
+        
+        <h6>Todo</h6>
+        <script type="text/javascript">
+            var logHub = $.connection.logHub;
+            logHub.client.messageUpdate = function (messages) {
+                console.log(messages);
+                $m = messages;
+            };
+
+            $.connection.hub.start()
+                .done(function(){ console.log('Now connected, connection ID=' + $.connection.hub.id); })
+                .fail(function () { console.log('Could not Connect!'); });
+
+        </script>
+        
+    </body>
+</html>

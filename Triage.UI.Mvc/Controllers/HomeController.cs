@@ -4,9 +4,9 @@ namespace Triage.UI.Mvc.Controllers
 {
     public class HomeController : Controller
     {
-        public ContentResult Index()
+        public ActionResult Index()
         {
-            return new ContentResult {Content = "Welcome"};
+            return View();
         } 
     }
 }

@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using SimpleInjector.Integration.WebApi;
-using Triage.DomainController;
+using Triage.Business;
 using Triage.Persistence.Context;
 using Triage.Web.Api.Controllers;
 
@@ -14,8 +16,6 @@ namespace Triage.UI.Mvc.App_Start
     using System.Web.Mvc;
 
     using SimpleInjector;
-    using SimpleInjector.Extensions;
-    using SimpleInjector.Integration.Web;
     using SimpleInjector.Integration.Web.Mvc;
     
     public static class SimpleInjectorInitializer
@@ -40,37 +40,55 @@ namespace Triage.UI.Mvc.App_Start
      
         private static void InitializeContainer(Container container)
         {
-            container.AutoMap(
-                Assembly.GetExecutingAssembly(), 
-                Assembly.GetAssembly(typeof(ITriageDbContextFactory)),
-                Assembly.GetAssembly(typeof(IEventLogController)),
-                Assembly.GetAssembly(typeof(ITriageDbContextFactory)),
-                Assembly.GetAssembly(typeof(LogController))
-                );
+            var assemblies = GetInjectionAssemblies().ToList();
+
+            container.AutoMapDefaults(assemblies);
+            container.RegisterAllConcreteImplementations<IDbIndex>(assemblies);
 
             container.Register<LogController>();
             container.Register<ITriageDbContextFactory, TriageDbContextFactory>(Lifestyle.Singleton);
-            // For instance:
-            // container.Register<IUserRepository, SqlUserRepository>();
+        }
+
+        private static IEnumerable<Assembly> GetInjectionAssemblies()
+        {
+            yield return Assembly.GetExecutingAssembly();
+            yield return Assembly.GetAssembly(typeof (ITriageDbContextFactory));
+            yield return Assembly.GetAssembly(typeof (IEventLogController));
+            yield return Assembly.GetAssembly(typeof (ITriageDbContextFactory));
+            yield return Assembly.GetAssembly(typeof (LogController));
         }
     }
 
     public static class SimpleInjectorExtensions
     {
-        public static void AutoMap(this Container container, params Assembly[] assemblies)
+        public static void RegisterAllConcreteImplementations<T>(this Container container, IEnumerable<Assembly> assemblies)
+        {
+            var baseType = typeof (T);
+
+            var concreteTypes = (
+                from assembly in assemblies
+                from type in assembly.GetTypes()
+                where !type.IsAbstract && !type.IsGenericType
+                where baseType.IsAssignableFrom(type)
+                select type).Distinct();
+
+            container.RegisterAll<T>(concreteTypes);
+        }
+
+        public static void AutoMapDefaults(this Container container, IEnumerable<Assembly> assemblies)
         {
             container.ResolveUnregisteredType += (s, e) =>
             {
                 if (e.UnregisteredServiceType.IsInterface && !e.Handled)
                 {
-                    Type[] concreteTypes = (
+                    var concreteTypes = (
                         from assembly in assemblies
                         from type in assembly.GetTypes()
                         where !type.IsAbstract && !type.IsGenericType
                         where e.UnregisteredServiceType.IsAssignableFrom(type)
                         select type)
                         .ToArray();
-
+                    
                     if (concreteTypes.Length == 1)
                     {
                         e.Register(Lifestyle.Transient.CreateRegistration(concreteTypes[0],

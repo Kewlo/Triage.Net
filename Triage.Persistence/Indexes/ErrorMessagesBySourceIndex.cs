@@ -2,13 +2,21 @@ using System.Linq;
 using Raven.Client.Indexes;
 using Triage.Api.Domain.Messages;
 using Triage.Api.Domain.Messages.Aggregates;
+using Triage.Persistence.Context;
 
 namespace Triage.Persistence.Indexes
 {
-    public class ErrorMessagesBySourceIndex : AbstractIndexCreationTask<ErrorMessage, ErrorMessagesBySource>
+    public interface IErrorMessagesBySourceIndex : IDbIndex
     {
+    }
+
+    public class ErrorMessagesBySourceIndex : AbstractIndexCreationTask<ErrorMessage, ErrorMessagesBySource>, IErrorMessagesBySourceIndex
+    {
+        public override string IndexName { get { return Persistence.Indexes.IndexName.ErrorMessagesBySouce.ToString(); } }
+
         public ErrorMessagesBySourceIndex()
         {
+
             Map = docs => from doc in docs
                 select new
                 {
@@ -40,4 +48,5 @@ namespace Triage.Persistence.Indexes
                 };
         }
     }
+
 }
