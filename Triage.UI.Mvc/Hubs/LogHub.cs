@@ -8,12 +8,6 @@ namespace Triage.UI.Mvc.Hubs
 {
     public class LogHub : Hub, ILogHub
     {
-        public void SendNewMessages(IEnumerable<Message> messages)
-        {
-            var logHub = GlobalHost.ConnectionManager.GetHubContext<LogHub>();
-            logHub.Clients.All.messageUpdate(messages);
-        }
-
         public void HourlyErrorUpdate(IEnumerable<ErrorMessagesBySource> currentHourErrors)
         {
             var logHub = GlobalHost.ConnectionManager.GetHubContext<LogHub>();
@@ -24,6 +18,12 @@ namespace Triage.UI.Mvc.Hubs
         {
             var logHub = GlobalHost.ConnectionManager.GetHubContext<LogHub>();
             logHub.Clients.All.notify();
+        }
+
+        public void MessageUpdate(IList<Message> messages)
+        {
+            var logHub = GlobalHost.ConnectionManager.GetHubContext<LogHub>();
+            logHub.Clients.All.messageUpdate(messages);
         }
     }
 

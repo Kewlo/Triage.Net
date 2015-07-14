@@ -16,7 +16,7 @@ namespace Triage.Business
         void LogWarning(Message message);
         void LogMessage(Message message);
         void LogMeasure(Measure measure);
-        IList<Message> GetMessages();
+        IList<Message> GetMessages(DateTime? occuredOnOrAfter = null);
         IList<Measure> GetMeasures();
         void Setup(int count);
         IEnumerable<MeasureSummary> GetSummary();
@@ -74,12 +74,13 @@ namespace Triage.Business
             }
         }
 
-        public IList<Message> GetMessages()
+        public IList<Message> GetMessages(DateTime? occuredOnOrAfter = null)
         {
             using (var dbContext = _dbContextFactory.CreateTriageDbContext())
             {
                 return dbContext
                     .Query<Message>()
+                    .If(occuredOnOrAfter.HasValue, messages => messages.Where(message => message.Date >= occuredOnOrAfter)) 
                     .ToList();
             }
         }

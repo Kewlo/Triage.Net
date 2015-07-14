@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
+using Triage.Api.Domain.Messages;
 using Triage.Business.Messages;
 
 namespace Triage.Business.Notifications
@@ -32,15 +33,20 @@ namespace Triage.Business.Notifications
 
         private void Notify(object state)
         {
-            var errorsSinceLastCheck = _eventLogBusiness.GetErrorMessages(_lastNotifyTime);
+            var messages = _eventLogBusiness.GetMessages(_lastNotifyTime);
             //_logHub.Notify();
-            if (errorsSinceLastCheck.Any() == false)
+            if (messages.Any() == false)
             {
                 return;
             }
+            _logHub.MessageUpdate(messages);
 
-            var currentHourErrors = _eventLogBusiness.GetErrorsBySource(DateTime.Now.Date, DateTime.Now.Hour);
-            _logHub.HourlyErrorUpdate(currentHourErrors);
+
+            if (messages.Any(message => message.Type == MessageType.Error))
+            {
+                var currentHourErrors = _eventLogBusiness.GetErrorsBySource(DateTime.Now.Date, DateTime.Now.Hour);
+                _logHub.HourlyErrorUpdate(currentHourErrors);
+            }
             
             //var lastHour = DateTime.Now.AddHours(-1);
             //var lastHourErrors = _eventLogBusiness.GetErrorsBySource(lastHour, lastHour.Hour);
