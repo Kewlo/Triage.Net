@@ -18,6 +18,7 @@ namespace Triage.Persistence.Indexes
         {
 
             Map = docs => from doc in docs
+                .Where(message => message.Type == MessageType.Error)
                 select new
                 {
                     LastestErrorId = doc.Id,

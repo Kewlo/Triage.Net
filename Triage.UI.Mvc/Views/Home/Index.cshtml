@@ -1,36 +1,84 @@
 ﻿
 @{
-    Layout = null;
+    Layout = "~/Views/Shared/Layout.cshtml";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Home</title>
-</head>
-    <body>
-        <script src="~/Scripts/jquery-2.1.4.min.js"></script>
-        <script src="~/Scripts/jquery.signalR-2.2.0.min.js"></script>
-        <script src="~/signalr/hubs"></script>
+<div class="panel panel-info">
+    <div class="panel-heading">Messages</div>
+    <div class="panel-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Date</th>
+                    <th>Title</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: Messages">
+                <tr>
+                    <td><span data-bind="text: Type, css: { 'label': true, 'label-danger': Type == 'Error', 'label-warning': Type == 'Warning', 'label-info': Type == 'Info'}"></span></td>
+                    <td data-bind="text: Date"></td>
+                    <td data-bind="text: Title"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
         
-        <h6>Todo</h6>
-        <script type="text/javascript">
-            var logHub = $.connection.logHub;
-            logHub.client.hourlyErrorUpdate = function (messages) {
-                console.log(messages);
-            };
+<div class="panel panel-info">
+    <div class="panel-heading">Error in the last hour</div>
+    <div class="panel-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Hour</th>
+                    <th>Title</th>
+                    <th>Count</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach: ErrorSummary">
+                <tr>
+                    <td data-bind="text: Date"></td>
+                    <td data-bind="text: Hour"></td>
+                    <td data-bind="text: Title"></td>
+                    <td data-bind="text: Count"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-            logHub.client.notify = function () {
-                console.log("Running Notify...");
-            };
+@section scripts
+{
+    <script type="text/javascript">
+        var model = {
+            Messages: ko.observableArray(),
+            ErrorSummary: ko.observableArray()
+        }
 
-            $.connection.hub.start()
-                .done(function(){ console.log('Now connected, connection ID=' + $.connection.hub.id); })
-                .fail(function () { console.log('Could not Connect!'); });
+        var logHub = $.connection.logHub;
+        logHub.client.hourlyErrorUpdate = function (errors) {
+            model.ErrorSummary(errors);
+        };
 
-        </script>
+        logHub.client.messageUpdate = function (messages) {
+            messages.forEach(function (item) {
+                console.log(item);
+                model.Messages.unshift(item);
+            });
+        };
+
+        logHub.client.notify = function () {
+            console.log("Running Notify...");
+        };
+
+        $.connection.hub.start()
+            .done(function () { console.log('Now connected, connection ID=' + $.connection.hub.id); })
+            .fail(function () { console.log('Could not Connect!'); });
+
+
+        ko.applyBindings(model);
+    </script>
+}
         
-    </body>
-</html>
