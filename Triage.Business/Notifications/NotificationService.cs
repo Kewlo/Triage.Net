@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using Triage.Business.Messages;
-using Triage.Persistence.Context;
 
 namespace Triage.Business.Notifications
 {
